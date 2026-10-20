@@ -1,67 +1,81 @@
-# Gaze2HOI
+<h1 align="center">
+  <img src="docs/assets/gaze2hoi.svg" width="32" height="40" alt="">
+  Gaze2HOI: Gaze-Aware Intention Disambiguation for<br>
+  Egocentric Hand-Object Interaction Forecasting
+</h1>
 
-**Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting**
+<p align="center">
+  Chuanyang Ma, Chenye Wang, Yixuan Wang, Huiling Zhou, Xingqun Qi,<br>
+  Muyi Sun, Man Zhang, Caifeng Shan, Zhenan Sun
+</p>
 
-[Project page](https://gaze2hoi.github.io/) · [Paper (PDF)](https://gaze2hoi.github.io/assets/documents/gaze2hoi-paper.pdf) · [Code](https://github.com/gaze2hoi/Gaze2HOI) · [Models](https://huggingface.co/gaze2hoi/Gaze2HOI) · [Examples](https://huggingface.co/datasets/gaze2hoi/EgoAIM-Demo) · [Quick start](#quick-start) · [Reproducibility](docs/reproducibility.md)
+<p align="center">
+  <img src="docs/assets/arxiv.svg" alt="arXiv | 2610.xxxxx (placeholder)" title="arXiv identifier pending">
+  <a href="https://gaze2hoi.github.io/"><img src="docs/assets/project.svg" alt="Project | Page"></a>
+  <a href="https://huggingface.co/gaze2hoi/Gaze2HOI"><img src="docs/assets/models.svg" alt="Model | Gaze2HOI"></a>
+  <a href="https://huggingface.co/datasets/gaze2hoi/EgoAIM-Demo"><img src="docs/assets/data.svg" alt="Data | EgoAIM" title="EgoAIM demonstration examples"></a>
+</p>
 
-Gaze2HOI connects gaze-aware intention inference, anticipatory contact grounding, and coupled hand-object motion generation. Given an observation window, it predicts structured intentions for both hands and forecasts articulated hand motion together with object trajectories.
+<p align="center">
+  <br>
+  <a href="https://gaze2hoi.github.io/#demo">
+    <img src="docs/assets/forecast.webp" width="90%" alt="Four synchronized project-page examples in one row: Establish Contact, Move, Manipulate, and Put Down, from left to right. Original in-frame annotations are preserved.">
+  </a>
+</p>
 
-This repository provides two inference entry points:
+## 🔎 Overview
 
-- **Intention inference:** RGB observations and gaze features to structured two-hand intentions.
-- **Full pipeline:** intention inference, online contact grounding, and one-second hand-object motion forecasting.
+**Gaze2HOI** resolves intention ambiguity through gaze to forecast egocentric hand-object interactions. The framework connects three stages to predict articulated motion of both hands and 6-DoF object trajectories:
 
-The EgoAIM demo package contains the 11 examples used in the project page's qualitative, failure-case, and overview animations. The default seven-example run uses the same sample-specific draw numbers as the qualitative and failure-case presentations. Predictions are rendered without temporal smoothing or motion refinement.
+- **Gaze-aware intention inference.** Temporal Gaze Saliency Modulation (TGSM) integrates gaze history into a vision-language model to infer structured intentions for each hand.
+- **Anticipatory contact grounding.** ACG translates intentions and observed interactions into contact fields, with support and placement fields for Put Down.
+- **Coupled motion generation.** Conditional diffusion jointly forecasts hand and object motion under semantic and geometric conditions.
 
-```mermaid
-flowchart LR
-    A[RGB observations and gaze] --> B[TGSM + Qwen3-VL]
-    B --> C[Structured intentions]
-    C --> D[Anticipatory contact grounding]
-    E[Observed 3D hands, objects and scene] --> D
-    D --> F[Conditional motion diffusion]
-    C --> F
-    E --> F
-    F --> G[Future hands and object trajectories]
-```
+<details>
+<summary><strong>Explore the framework</strong></summary>
 
-## Release layout
+<p align="center">
+  <a href="docs/assets/architecture.webp"><img src="docs/assets/architecture.webp" width="100%" alt="Gaze2HOI framework: gaze-aware vision-language model, anticipatory contact grounding, and conditional motion diffusion."></a>
+</p>
 
-Code, [checkpoints](https://huggingface.co/gaze2hoi/Gaze2HOI), and [examples](https://huggingface.co/datasets/gaze2hoi/EgoAIM-Demo) are distributed separately:
+</details>
 
-```text
-workspace/
-├── gaze2hoi-release/          # This repository
-├── gaze2hoi-checkpoints/      # Model weights and fixed model assets
-├── egoaim-demo/               # Portable example inputs and references
-└── mano/                     # Your locally obtained and prepared MANO files
-```
+This inference release supports both standalone intention inference and the full forecasting pipeline. EgoAIM-Demo provides inputs and references for the project-page examples.
 
-The checkpoint package contains the intention adapter, ACG weights, EMA motion weights, and fixed geometry, vocabulary, and normalization assets. The Qwen3-VL base model is downloaded separately from [Qwen/Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct).
+> **Inputs.** Full forecasting uses RGB observations, gaze, observed 3D hand and object states, camera geometry, and scene information. These inputs are included in the demo package. Training, third-party baselines, and reconstruction of these inputs from arbitrary videos are outside this release.
 
-The full pipeline consumes **observed 3D hand and object states**, camera geometry, and scene information in addition to RGB and gaze. These inputs are included in the examples. Recovering them from an arbitrary RGB video is outside this inference release.
+<a id="installation"></a>
 
-## Installation
+## ⚙️ Installation
 
-Python 3.10 and a CUDA-enabled PyTorch installation are recommended. The verified environment uses PyTorch 2.10.0 with CUDA 12.8. Install the [PyTorch build appropriate for your machine](https://pytorch.org/get-started/locally/), then install this repository:
+- **Environment:** Linux, Python 3.10, PyTorch 2.10.0, and CUDA 12.8 were used for verification.
+- **GPU memory:** the BF16 intention base weights occupy approximately 16.3 GiB; allow additional memory for visual tokens and generation. Multi-GPU placement is supported.
+- **Rendering:** FFmpeg and working OpenGL/EGL support. The default renderer uses EGL on NVIDIA GPUs.
 
 ```bash
 git clone https://github.com/gaze2hoi/Gaze2HOI.git gaze2hoi-release
 cd gaze2hoi-release
+
 python3.10 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools wheel
-python -m pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu128
+python -m pip install torch==2.10.0 torchvision==0.25.0 \
+  --index-url https://download.pytorch.org/whl/cu128
 python -m pip install -e ".[intention,render,download]"
 ```
 
-Rendering also requires FFmpeg and a working OpenGL/EGL installation. On Ubuntu, FFmpeg can be installed with `sudo apt-get install ffmpeg`. The renderer uses EGL by default and supports headless NVIDIA systems.
+On Ubuntu, install FFmpeg with `sudo apt-get install ffmpeg`. For other CUDA environments, use a compatible [PyTorch installation](https://pytorch.org/get-started/locally/). See the [inference guide](docs/inference.md) for GPU placement and offline loading.
 
-The intention model runs in BF16. Its base weights occupy approximately 16.3 GiB, with additional memory required for visual tokens, attention, and generation. Multi-GPU placement is supported. ACG and motion inference use substantially less memory; the two stages run after the intention model is released from GPU memory.
+## 📦 Model and Data
 
-### Download checkpoints and examples
+| Resource | Contents | Download |
+| :--- | :--- | :--- |
+| **Gaze2HOI** | Intention adapter, contact and motion models, fixed assets | [Model weights](https://huggingface.co/gaze2hoi/Gaze2HOI) |
+| **EgoAIM-Demo** | Inputs and references for the project-page examples | [Demo data](https://huggingface.co/datasets/gaze2hoi/EgoAIM-Demo) |
 
-Run from the repository root:
+### Download the release assets
+
+From the code checkout, run:
 
 ```bash
 gaze2hoi download \
@@ -69,147 +83,131 @@ gaze2hoi download \
   --data-repo gaze2hoi/EgoAIM-Demo
 ```
 
-This creates `../gaze2hoi-checkpoints` and `../egoaim-demo`, matching the layout above. The download includes the 11 demonstration examples and their reference outputs; it does not include the Qwen base model or MANO files. See [asset setup](docs/assets.md) for custom paths and revision pinning, and [data format](docs/data-format.md) for the example structure.
+The [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) base model is downloaded separately on first intention inference. MANO requires the local preparation below.
 
-### Prepare MANO locally
+<details>
+<summary><strong>Directory layout and custom paths</strong></summary>
 
-Obtain the left and right MANO model files from the [official MANO website](https://mano.is.tuebingen.mpg.de/) under its license. MANO model files are not included in this repository or in the demo archives.
+The model and demo packages are saved next to the code checkout:
 
-Older MANO pickles contain Chumpy objects. Convert your local files once to NumPy-only pickles so that normal inference does not depend on Chumpy:
+```text
+workspace/
+├── gaze2hoi-release/         # Code
+├── gaze2hoi-checkpoints/     # Model weights and fixed assets
+├── egoaim-demo/              # Example inputs and references
+└── mano/                     # Locally prepared MANO files
+```
+
+Use `--checkpoints` and `--data` to override the asset locations, and pass the same paths to subsequent commands. See [asset setup](docs/assets.md) for package contents and pinned revisions.
+
+</details>
+
+### Prepare MANO
+
+Obtain `MANO_LEFT.pkl` and `MANO_RIGHT.pkl` from the [official MANO website](https://mano.is.tuebingen.mpg.de/) under its license, then convert them to NumPy-only pickles:
 
 ```bash
 python -m pip install --no-build-isolation chumpy==0.70
 python tools/prepare_mano.py --source /path/to/original/mano --output ../mano
 ```
 
-The conversion preserves numerical values and leaves the original files untouched. Keep the converted files local; the MANO license continues to apply.
+The conversion preserves numerical values and leaves the originals unchanged. MANO files are kept local and are not distributed with this project.
 
-## Quick start
+## 🚀 Quick Start
 
-Run the commands below from the repository root after placing the checkpoint and example directories as shown above.
+Run the **examples shown above** with `--samples overview`: Establish Contact, Move, Manipulate, and Put Down. Use CUDA to reproduce their recorded noise streams. Run all commands from the code checkout after completing the setup.
 
-### 1. Validate the installation and assets
+### 1. Verify the assets
 
 ```bash
-gaze2hoi list
+gaze2hoi list --samples overview
 gaze2hoi check --samples all --mano-dir ../mano --hashes
 ```
 
-All data and checkpoint paths can be overridden with `--data` and `--checkpoints`.
+### 2. Forecast the interactions
 
-### 2. Predict intentions
+A single command runs intention inference, contact grounding, and motion generation:
 
 ```bash
-gaze2hoi intention --output outputs/intentions
+gaze2hoi forecast --samples overview --mano-dir ../mano \
+  --output outputs/overview
 ```
 
-This writes a structured `intention.json` for each example and a combined `predictions.jsonl`. The VLM uses grammar-constrained decoding with `do_sample=False`.
-
-For a local base-model download, add `--base-model /path/to/Qwen3-VL-8B-Instruct --local-files-only`. To reserve GPU memory explicitly, repeat `--max-memory`, for example `--max-memory 0=10GiB --max-memory 1=10GiB`. These limits control model placement; allow additional headroom for inference.
-
-### 3. Run the full pipeline
+### 3. Render and explore
 
 ```bash
-gaze2hoi forecast --mano-dir ../mano --output outputs/homepage
+gaze2hoi render --samples overview --mano-dir ../mano \
+  --results outputs/overview --output outputs/gallery
+python -m http.server 8000 --directory outputs/gallery
 ```
 
-The command generates intentions, recomputes contact fields, and samples future motions. The default selection contains the four qualitative examples and three failure cases. Use `--samples all` to include the four overview examples, or select individual sample IDs or groups:
+Open **[localhost:8000](http://localhost:8000/)** to compare observations, ground truth, and fresh forecasts in the local gallery. To run all supplied examples, replace `--samples overview` with `--samples all` in both `forecast` and `render`, using a new output directory.
+
+<details>
+<summary><strong>Run intention inference on its own</strong></summary>
+
+Generate structured intentions without forecasting motion:
 
 ```bash
-gaze2hoi forecast --mano-dir ../mano \
-  --samples P0009_8c0caf6c_000215_000274 \
-  --output outputs/single-example
+gaze2hoi intention --samples overview --output outputs/intentions
 ```
 
-To reuse intentions generated by the previous entry point, provide them explicitly:
+This writes a per-example `intention.json` and a combined `predictions.jsonl` using grammar-constrained decoding with `do_sample=False`. To reuse those intentions:
 
 ```bash
-gaze2hoi forecast --mano-dir ../mano \
+gaze2hoi forecast --samples overview --mano-dir ../mano \
   --intention-file outputs/intentions/predictions.jsonl \
   --output outputs/from-intentions
 ```
 
-The full pipeline does not read archived reference predictions or future ground truth as model inputs. Run metadata records whether intentions were generated in the current invocation or supplied explicitly.
+This step is optional: `forecast` already runs intention inference when no intention file is supplied. Run metadata records the source of the intentions.
 
-### 4. Render and inspect the forecasts
+</details>
 
-```bash
-gaze2hoi render --mano-dir ../mano \
-  --results outputs/homepage --output outputs/gallery
-python -m http.server 8000 --directory outputs/gallery
-```
+## 📖 Documentation and Reproducibility
 
-Open `http://localhost:8000/` to view RGB observations, ground truth, and freshly generated predictions. Rendering uses the example's stored camera, crop, object appearance, and 20% furniture opacity. The renderer consumes the generated arrays directly.
+The default configuration retains 50 DDIM steps, guidance 1.5, eta 0, base seed 999, and each example's recorded draw. Forecasts are generated from observed inputs and rendered without temporal smoothing or motion refinement.
 
-## Sampling and outputs
+The supplied examples were checked in a matched environment. Hardware, kernels, precision, and software versions can affect numerical results; detailed measurements and limitations are documented below.
 
-Defaults are **50 DDIM steps**, **guidance scale 1.5**, **eta 0**, and **base seed 999**. Each sample records its homepage draw number and noise profile. Draw numbers shown by the CLI are one-based; array indices are zero-based.
+| Guide | What you will find |
+| :--- | :--- |
+| [Inference](docs/inference.md) | Sample selection, GPU placement, sampling controls, and outputs |
+| [Asset setup](docs/assets.md) | Package contents, download revisions, and custom paths |
+| [Data format](docs/data-format.md) | Input layout, coordinates, array shapes, and prediction files |
+| [Reproduction checks](docs/reproducibility.md) | Numerical agreement, environment, resource use, and limitations |
 
-```bash
-gaze2hoi forecast --mano-dir ../mano --samples qualitative \
-  --num-draws 5 --seed 999 --output outputs/five-draws
-```
-
-Changing `--seed` explores different forecasts. Use `--draw 3` to request a particular draw across selected examples. Existing per-sample results are protected; use another output directory or pass `--overwrite` deliberately.
+### Repository structure
 
 ```text
-outputs/homepage/
-├── predictions.jsonl
-├── run.json
-└── <sample_id>/
-    ├── intention.json
-    ├── forecast.npz
-    └── metadata.json
+gaze2hoi-release/
+├── src/gaze2hoi/
+│   ├── cli.py                # Command-line interface
+│   ├── data.py               # Demo loading and validation
+│   ├── io.py                 # File I/O and integrity checks
+│   ├── intention/            # Gaze-aware intention inference
+│   ├── motion/               # Contact grounding and motion generation
+│   └── visualization/        # Trajectory rendering and video export
+├── tests/                    # Input and inference checks
+├── tools/prepare_mano.py     # Local MANO conversion
+└── docs/                     # Usage and reproduction guides
 ```
 
-`forecast.npz` contains metric states, hand trajectories, bound-object trajectories, validity masks, object slots, draw indices, seeds, and predicted contact fields. See [the data format](docs/data-format.md) for shapes and coordinate conventions.
+## 📝 Citation
 
-Fixed seeds and recorded settings support reproducibility in a matched environment. Different hardware, attention kernels, precision settings, and software versions can change floating-point results. The four overview examples retain their original device-based noise stream; reproduce those on CUDA. See [the verification notes](docs/reproducibility.md) for the measured scope of reproduction.
-
-## Repository structure
-
-```text
-src/gaze2hoi/
-├── cli.py                   # Intention, forecast, validation and rendering commands
-├── data.py                  # Portable example manifest
-├── io.py                    # Atomic outputs and integrity checks
-├── intention/               # TGSM, constrained VLM decoding and schema validation
-├── motion/                  # Object binding, online ACG and motion diffusion
-└── visualization/           # MANO, textured objects and headless rendering
-tests/                       # Portable regression tests
-tools/prepare_mano.py         # Local MANO compatibility conversion
-docs/                        # Format, reproduction and asset documentation
-```
-
-This release focuses on inference. It does not include training pipelines or third-party baseline implementations.
-
-## Development
-
-```bash
-python -m pip install -e ".[dev]"
-python -m pytest
-ruff check src tests tools
-ruff format --check src tests tools
-```
-
-The default regression tests do not require model downloads, example data, or a GPU.
-
-## Citation
+If you find this work helpful, please consider citing our paper:
 
 ```bibtex
 @misc{ma2026gaze2hoi,
-  title  = {Gaze2HOI: Gaze-Aware Intention Disambiguation for
-            Egocentric Hand-Object Interaction Forecasting},
-  author = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan
-            and Zhou, Huiling and Qi, Xingqun and Sun, Muyi
-            and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
+  title  = {Gaze2HOI: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
+  author = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
   year   = {2026},
   note   = {Research manuscript}
 }
 ```
 
-## Acknowledgments and licenses
+## 🤝 Acknowledgments and Licenses
 
-Gaze2HOI builds on [Qwen3-VL](https://github.com/QwenLM/Qwen3-VL), [HOT3D](https://github.com/facebookresearch/hot3d), [MANO](https://mano.is.tuebingen.mpg.de/), and the open-source libraries listed in `pyproject.toml`.
+Gaze2HOI builds on [Qwen3-VL](https://github.com/QwenLM/Qwen3-VL), [HOT3D](https://github.com/facebookresearch/hot3d), [MANO](https://mano.is.tuebingen.mpg.de/), and the open-source libraries listed in [pyproject.toml](pyproject.toml). We thank their authors and contributors.
 
-Repository code is covered by [LICENSE](LICENSE). Model, dataset, MANO, and third-party asset terms are separate; see [NOTICE](NOTICE) and the component-specific notices in the model and example packages. In particular, HOT3D sequence data, hand annotations, and object models have distinct license terms.
+Repository code is released under the [MIT license](LICENSE). Model weights, datasets, MANO, and third-party assets retain their separate terms; see [NOTICE](NOTICE) and the notices in each package. HOT3D sequence data, hand annotations, and object models have distinct license terms.
