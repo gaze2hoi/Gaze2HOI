@@ -1,0 +1,4 @@
+include NOTICE
+recursive-include docs *.md *.json
+recursive-include tools *.py
+recursive-include tests *.py

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Gaze2HOI · Forecast viewer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <a class="brand" href="https://gaze2hoi.github.io/">Gaze2HOI</a>
+        <p class="eyebrow">Forecast viewer</p>
+        <h1>From intention to interaction.</h1>
+        <p class="intro">
+          Observed context, recorded future, and generated hand-object motion.
+        </p>
+      </header>
+      <section aria-label="Forecast examples">
+        <div class="example-heading">
+          <span id="phase"></span><span id="draw"></span>
+        </div>
+        <div class="panels">
+          <article>
+            <h2>Observations</h2>
+            <div class="intent empty" aria-hidden="true"></div>
+            <video id="observation" muted playsinline preload="auto"></video>
+          </article>
+          <article>
+            <h2>Ground Truth</h2>
+            <div class="intent" id="truth-intent"></div>
+            <video id="truth" muted playsinline preload="auto"></video>
+          </article>
+          <article>
+            <h2 class="accent">Gaze2HOI</h2>
+            <div class="intent" id="prediction-intent"></div>
+            <video id="prediction" muted playsinline preload="auto"></video>
+          </article>
+        </div>
+        <nav class="samples" id="samples" aria-label="Choose an example"></nav>
+        <div class="toolbar">
+          <button id="toggle" type="button">Pause</button
+          ><span id="status" role="status" aria-live="polite"
+            >Loading example…</span
+          >
+        </div>
+        <p class="note">
+          Visualizations show raw model outputs without temporal smoothing or
+          motion refinement.
+        </p>
+        <details>
+          <summary>Example details</summary>
+          <p><code id="sample-id"></code></p>
+          <div class="links">
+            <a id="metadata" target="_blank" rel="noopener">Run metadata</a
+            ><a id="reference" target="_blank" rel="noopener"
+              >Archived website prediction</a
+            >
+          </div>
+        </details>
+      </section>
+    </main>
+    <script id="gallery-data" type="application/json">
+      __GALLERY_DATA__
+    </script>
+    <script src="player.js"></script>
+  </body>
+</html>

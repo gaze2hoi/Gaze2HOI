@@ -1,0 +1,20 @@
+Gaze2HOI inference release
+Copyright 2026 Gaze2HOI Authors
+
+The repository's MIT license applies to its source code and original
+documentation. It does not relicense pretrained models, datasets, model
+parameters, or third-party assets downloaded or loaded by this software.
+
+Qwen3-VL-8B-Instruct is provided by the Qwen team under Apache-2.0.
+https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct
+
+HOT3D is provided by Meta. Sequence data and non-hand annotations use
+CC BY-SA 4.0; hand annotations use CC BY-NC-SA 4.0. Object models use
+CC BY-SA 4.0 with the additional restrictions stated in the HOT3D agreement.
+https://www.projectaria.com/datasets/hot3d/license/
+
+MANO model files are not redistributed. Obtain them from the official source
+and follow their original license, including redistribution restrictions.
+https://mano.is.tuebingen.mpg.de/license.html
+
+Dependencies are installed separately and retain their respective licenses.
