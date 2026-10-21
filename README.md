@@ -200,14 +200,11 @@ gaze2hoi-release/
 If you find this work helpful, please consider citing our paper:
 
 ```bibtex
-@misc{ma2026gaze2hoi,
-  title         = {Gaze2HOI: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
-  author        = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
-  year          = {2026},
-  eprint        = {2610.27877},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  url           = {https://arxiv.org/abs/2610.27877}
+@article{ma2026gaze2hoi,
+    title   = {{Gaze2HOI}: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
+    author  = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
+    journal = {arXiv preprint arXiv:2610.27877},
+    year    = {2026}
 }
 ```
 
