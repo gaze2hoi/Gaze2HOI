@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/arxiv.svg" alt="arXiv | 2610.xxxxx (placeholder)" title="arXiv identifier pending">
+  <a href="https://arxiv.org/abs/2610.27877"><img src="docs/assets/arxiv.svg" alt="arXiv | 2610.27877" title="Read Gaze2HOI on arXiv"></a>
   <a href="https://gaze2hoi.github.io/"><img src="docs/assets/project.svg" alt="Project | Page"></a>
   <a href="https://huggingface.co/gaze2hoi/Gaze2HOI"><img src="docs/assets/models.svg" alt="Model | Gaze2HOI"></a>
   <a href="https://huggingface.co/datasets/gaze2hoi/EgoAIM-Demo"><img src="docs/assets/data.svg" alt="Data | EgoAIM" title="EgoAIM demonstration examples"></a>
@@ -18,9 +18,11 @@
 
 <p align="center">
   <br>
-  <a href="https://gaze2hoi.github.io/#demo">
-    <img src="docs/assets/forecast.webp" width="90%" alt="Four synchronized project-page examples in one row: Establish Contact, Move, Manipulate, and Put Down, from left to right. Original in-frame annotations are preserved.">
-  </a>
+  <sup><sup>
+    <a href="https://gaze2hoi.github.io/#demo">
+      <img src="docs/assets/forecast.webp" width="90%" alt="Four synchronized project-page examples in one row: Establish Contact, Move, Manipulate, and Put Down, from left to right. Original in-frame annotations are preserved.">
+    </a>
+  </sup></sup>
 </p>
 
 ## 🔎 Overview
@@ -199,10 +201,13 @@ If you find this work helpful, please consider citing our paper:
 
 ```bibtex
 @misc{ma2026gaze2hoi,
-  title  = {Gaze2HOI: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
-  author = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
-  year   = {2026},
-  note   = {Research manuscript}
+  title         = {Gaze2HOI: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
+  author        = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
+  year          = {2026},
+  eprint        = {2610.27877},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2610.27877}
 }
 ```
 
