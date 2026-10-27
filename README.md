@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="docs/assets/gaze2hoi.svg" width="32" height="40" alt="">
+  <img src="docs/assets/gaze2hoi.svg" width="32" height="40" align="absmiddle" alt="">
   Gaze2HOI: Gaze-Aware Intention Disambiguation for<br>
   Egocentric Hand-Object Interaction Forecasting
 </h1>
