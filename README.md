@@ -5,8 +5,8 @@
 </h1>
 
 <p align="center">
-  Chuanyang Ma, Chenye Wang, Yixuan Wang, Huiling Zhou, Xingqun Qi,<br>
-  Muyi Sun, Man Zhang, Caifeng Shan, Zhenan Sun
+  Chuanyang Ma, Chenye Wang, Yixuan Wang, Huiling Zhou, Man Zhang,<br>
+  Xingqun Qi, Muyi Sun, Caifeng Shan, Zhenan Sun
 </p>
 
 <p align="center">
@@ -202,7 +202,7 @@ If you find this work helpful, please consider citing our paper:
 ```bibtex
 @article{ma2026gaze2hoi,
     title   = {{Gaze2HOI}: Gaze-Aware Intention Disambiguation for Egocentric Hand-Object Interaction Forecasting},
-    author  = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Qi, Xingqun and Sun, Muyi and Zhang, Man and Shan, Caifeng and Sun, Zhenan},
+    author  = {Ma, Chuanyang and Wang, Chenye and Wang, Yixuan and Zhou, Huiling and Zhang, Man and Qi, Xingqun and Sun, Muyi and Shan, Caifeng and Sun, Zhenan},
     journal = {arXiv preprint arXiv:2610.27877},
     year    = {2026}
 }
